@@ -18,8 +18,12 @@ args = vars(ap.parse_args())
 # define the lower and upper boundaries of the "green"
 # ball in the HSV color space, then initialize the
 # list of tracked points
-greenLower = (21, 88, 127)
-greenUpper = (167, 177, 255)
+# greenLower = (21, 88, 127)
+# greenUpper = (167, 177, 255)
+greenLower = (0, 0, 0)
+greenUpper = (255, 255, 255)
+# greenLower = (10, 1, 151)
+# greenUpper = (41, 66, 199)
 pts = deque(maxlen=args["buffer"])
  
 # if a video path was not supplied, grab the reference
@@ -33,7 +37,7 @@ else:
  
 # allow the camera or video file to warm up
 time.sleep(2.0)
-
+fgbg = cv2.createBackgroundSubtractorMOG2()
 # keep looping
 while True:
 	# grab the current frame
@@ -48,7 +52,7 @@ while True:
 		break
  
 	# resize image for higher fps
-	frame = imutils.resize(frame, width=300)
+	frame = imutils.resize(frame, width=600)
 	# blur the frame to reduce high frequency noise
 	blurred = cv2.GaussianBlur(frame, (11, 11), 0)
 	# convert to HSV
@@ -57,7 +61,8 @@ while True:
 	# construct a mask for the color "green", then perform
 	# a series of dilations and erosions to remove any small
 	# blobs left in the mask
-	mask = cv2.inRange(hsv, greenLower, greenUpper)
+	mask = fgbg.apply(blurred)
+	# mask = cv2.inRange(hsv, greenLower, greenUpper)
 	mask = cv2.erode(mask, None, iterations=2)
 	mask = cv2.dilate(mask, None, iterations=2)
 
