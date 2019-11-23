@@ -1,3 +1,3 @@
 # object_tracker
 
-A script that detects Nylon and feather badminton shuttles.
+Object_tracker is a script that detects the velocity of projectile badminton shuttles made of nylon or feather.
